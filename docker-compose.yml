@@ -34,7 +34,7 @@ services:
       - "--keymanager=keystore"
       - "--keymanageropts=/data/keystore.json"
       - "--enable-account-metrics"
-      - "--graffit=${GRAFFITI}"
+      - "--graffiti=${GRAFFITI}"
     volumes:
       - ./validator:/data
     tty: true
