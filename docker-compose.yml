@@ -26,7 +26,7 @@ services:
 
   beacon:
     container_name: beacon-chain
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain:${PRYSM_DOCKER_TAG}
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:${IMAGE_VERSION_TAG}
     restart: always
     hostname: beacon-chain
     depends_on:
@@ -44,7 +44,7 @@ services:
 
   validator:
     container_name: validator
-    image: gcr.io/prysmaticlabs/prysm/validator:${PRYSM_DOCKER_TAG}
+    image: gcr.io/prysmaticlabs/prysm/validator:${IMAGE_VERSION_TAG}
     restart: on-failure
     hostname: validator
     depends_on:
@@ -57,7 +57,7 @@ services:
 
   slasher:
     container_name: slasher
-    image: gcr.io/prysmaticlabs/prysm/slasher:${PRYSM_DOCKER_TAG}
+    image: gcr.io/prysmaticlabs/prysm/slasher:${IMAGE_VERSION_TAG}
     restart: always
     hostname: slasher
     depends_on:
