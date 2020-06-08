@@ -1,7 +1,7 @@
 # prysm-docker-compose
 This docker-compose suite includes all parts to run and monitor a Prysm Ethereum 2.0 staking node. Please read this README in order to customize it to your needs.
 
-![image](https://user-images.githubusercontent.com/54934211/82322232-77ca0200-99d6-11ea-80cb-622da470768a.png)
+![image](https://user-images.githubusercontent.com/54934211/82576760-5ad63000-9b8a-11ea-9089-c6a60a692fb1.png)
 
 ![image](https://user-images.githubusercontent.com/54934211/82309772-d5a11e80-99c3-11ea-831d-e485b48e920e.png)
 
@@ -11,33 +11,36 @@ This docker-compose suite includes all parts to run and monitor a Prysm Ethereum
 Credits to [prysm-grafana-dashboard](https://github.com/GuillaumeMiralles/prysm-grafana-dashboard) for providing the dashboards!
 
 ## Services
+* geth (beacon conntects to it to see deposits for validators)
 * beacon
 * validator
 * slasher
 * prometheus
 * grafana
 
-**All services are enabled by default.** In case you want to only run beacon & validator move the `compose-examples/docker-compose.override.yml_beacon_validator` file in the same folder as your `docker-compose.yaml` and rename it to `docker-compose.override.yml`. Read up on [docker-compose files & override](https://docs.docker.com/compose/extends/#multiple-compose-files) to customize your setup.
+**All services are enabled by default.**
 
-## (optional) Prepare your .env before running your node
-Edit `.env` file to set different options for the node:
+### Minimal Setup (beacon & validator only)
+In case you want to run only beacon & validator (geth, slasher, prometheus, grafana get disabled) move the `compose-examples/docker-compose.beacon-validator.override.yaml` file in the same folder as your `docker-compose.yaml` and rename it to `docker-compose.override.yaml`. Read up on [docker-compose files & override](https://docs.docker.com/compose/extends/#multiple-compose-files) to customize your setup further.
+
+## (optional) Configure your node
+
+### Prysm version
+Edit `.env` file to set the docker tag to use (version of nodes):
 ```
-IMAGE_VERSION_TAG=[prysm-version]
-PUBLIC_IP=[your-public-ip4-address]
-PUBLIC_HOST_DNS=[your-public-host-dns]
-PUBLIC_TCP_PORT=13000
+PRYSM_DOCKER_TAG=[prysm-version]
 ```
+It's set to the latest stable version.
 
-### prysm-version
-This table gets updated every time a new release happens until prysm dev team adds a "stable" tag or something similar. https://github.com/prysmaticlabs/documentation/issues/103
-
-Version | IMAGE_VERSION_TAG
+Version | PRYSM_DOCKER_TAG
 --------|------------------
 schlesi | schlesi
 alpha.8 | HEAD-f831a7
 
-### your-public-ip4-address & your-public-host-dns
-To gain a better connectivity for your beacon node you need to specifiy your public ip and/or your dns name there and follow the guide [Improve Peer-to-Peer Connectivity](https://docs.prylabs.network/docs/prysm-usage/p2p-host-ip/).
+This table gets updated every time a new release happens until prysm dev team adds a "stable" tag or something similar. https://github.com/prysmaticlabs/documentation/issues/103
+
+### Public ip & other Prysm parameters/arguments
+Configuration files are located in the folder `./config`. To gain a better connectivity for your beacon node you should specifiy your public ip and/or your dns name in `./config/beacon.yaml`. Follow the guide [Improve Peer-to-Peer Connectivity](https://docs.prylabs.network/docs/prysm-usage/p2p-host-ip/).
 
 ## Validator accounts
 Please read up on how to use the [validator](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client/) to stake funds and how to [activate the validator](https://docs.prylabs.network/docs/install/lin/activating-a-validator/). These are only short steps to make it work fast:
@@ -83,13 +86,9 @@ docker-compose logs --tail=100 beacon
 ```
 
 ### Prometheus
-To enable Prometheus delete the `prometheus` service in `docker-compose.override.yaml`.
-
-Runs on localhost:9090, scrapes data of beacon, validator and slasher.
+Runs on http://localhost:9090, scrapes data of beacon, validator and slasher.
 
 ### Grafana
-To enable Grafana delete the `grafana` service in `docker-compose.override.yaml`.
+Grafana listens on http://localhost:3000 and uses the data provided by prometheus service.
 
-Grafana runs on localhost:3000 and uses the data provided by prometheus service.
-
-Login with username `admin` and password `admin` (Grafana defaults), data source to Prometheus is already established. I recommend using https://github.com/GuillaumeMiralles/prysm-grafana-dashboard.
+Login with username `admin` and password `admin` (Grafana defaults), data source to Prometheus is already established and dashboards installed.

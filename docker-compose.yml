@@ -1,67 +1,72 @@
 version: "3.7"
+
+x-logging: &logging
+  logging:
+    driver: "json-file"
+    options:
+      max-file: "10"
+      max-size: "100m"
+
 services:
+  geth:
+    container_name: geth
+    image: ethereum/client-go:v1.9.14
+    restart: always
+    hostname: geth
+    command:
+      - --goerli
+      - '--rpc --rpcport=8545 --rpcaddr=0.0.0.0 --rpcvhosts="*"'
+      - '--ws --wsaddr=0.0.0.0 --wsport=8546 --wsorigins="*"'
+    ports:
+      - 30303:30303/tcp
+      - 30303:30303/udp
+    volumes:
+      - ./geth:/root/.ethereum
+    <<: *logging
+
   beacon:
     container_name: beacon-chain
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain:${IMAGE_VERSION_TAG}
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:${PRYSM_DOCKER_TAG}
     restart: always
     hostname: beacon-chain
-    command:
-      - "--datadir=/data"
-      - "--p2p-host-ip=${PUBLIC_IP}"
-      - "--p2p-host-dns=${PUBLIC_HOST_DNS}"
-      - "--p2p-tcp-port=${PUBLIC_TCP_PORT}"
+    depends_on:
+      - geth
+    command: "--config-file=/config/beacon.yaml"
     ports:
-      - ${PUBLIC_TCP_PORT}:13000
+      - 13000:13000
       - 12000:12000/udp
+    dns:
+      - 1.1.1.1
     volumes:
+      - ./config/beacon.yaml:/config/beacon.yaml:ro
       - ./beacon:/data
-    tty: true
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "10"
-        max-size: "100m"
+    <<: *logging
 
   validator:
     container_name: validator
-    image: gcr.io/prysmaticlabs/prysm/validator:${IMAGE_VERSION_TAG}
+    image: gcr.io/prysmaticlabs/prysm/validator:${PRYSM_DOCKER_TAG}
     restart: on-failure
     hostname: validator
     depends_on:
       - beacon
-    command:
-      - "--beacon-rpc-provider=beacon:4000"
-      - "--keymanager=keystore"
-      - "--keymanageropts=/data/keystore.json"
-      - "--enable-account-metrics"
-      - "--graffiti=${GRAFFITI}"
+    command: "--config-file=/config/validator.yaml"
     volumes:
+      - ./config/validator.yaml:/config/validator.yaml:ro
       - ./validator:/data
-    tty: true
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "10"
-        max-size: "100m"
+    <<: *logging
 
   slasher:
     container_name: slasher
-    image: gcr.io/prysmaticlabs/prysm/slasher:${IMAGE_VERSION_TAG}
+    image: gcr.io/prysmaticlabs/prysm/slasher:${PRYSM_DOCKER_TAG}
     restart: always
     hostname: slasher
     depends_on:
       - beacon
-    command:
-      - "--beacon-rpc-provider=beacon:4000"
-      - "--datadir=/data"
+    command: "--config-file=/config/slasher.yaml"
     volumes:
+      - ./config/slasher.yaml:/config/slasher.yaml:ro
       - ./slasher:/data
-    tty: true
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "10"
-        max-size: "100m"
+    <<: *logging
 
   prometheus:
     container_name: prometheus
@@ -75,11 +80,7 @@ services:
       - 9090:9090
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "10"
-        max-size: "100m"
+    <<: *logging
 
   grafana:
     container_name: grafana
@@ -92,8 +93,4 @@ services:
       - 3000:3000
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "10"
-        max-size: "100m"
+    <<: *logging
