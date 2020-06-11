@@ -15,7 +15,3 @@ beacon-rpc-provider: beacon:4000
 # Validator accounts & key management
 keymanager: keystore
 keymanageropts: /data/keystore.json
-
-############
-# Monitoring
-enable-account-metrics: true

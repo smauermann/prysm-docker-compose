@@ -5,6 +5,8 @@
 ##
 ############################################################
 
+graffiti: ""
+
 ##############
 # Connectivity
 beacon-rpc-provider: beacon:4000
@@ -13,9 +15,3 @@ beacon-rpc-provider: beacon:4000
 # Validator accounts & key management
 keymanager: wallet
 keymanageropts: /data/keystoreWallet.json
-
-############
-# Monitoring
-enable-account-metrics: true
-
-graffiti: ""
