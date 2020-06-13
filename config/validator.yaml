@@ -17,3 +17,10 @@ monitoring-host: 0.0.0.0
 # Validator accounts & key management
 keymanager: keystore
 keymanageropts: /data/keystore.json
+
+#####################################
+# Slasher and Slashing Protection
+slasher-rpc-provider: slasher:4002
+enable-external-slasher-protection: true
+enable-protect-attester: true
+enable-protect-proposer: true
