@@ -13,6 +13,7 @@ p2p-host-ip: ""
 p2p-host-dns: ""
 
 rpc-host: 0.0.0.0
+monitoring-host: 0.0.0.0
 
 # disable scan of local network
 p2p-denylist:
