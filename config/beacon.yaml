@@ -10,6 +10,7 @@ datadir: /data
 #######################
 # Connectivity settings
 p2p-host-ip: ""
+p2p-max-peers: 30
 
 rpc-host: 0.0.0.0
 monitoring-host: 0.0.0.0
