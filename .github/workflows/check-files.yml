@@ -16,3 +16,6 @@ jobs:
 
       - name: Docker Compose Lint
         run: docker-compose config --quiet
+
+      - name: yaml-lint
+        uses: ibiqlik/action-yamllint@v1
