@@ -57,6 +57,7 @@ services:
     image: prom/prometheus
     restart: on-failure
     hostname: prometheus
+    user: root
     command:
       - "--storage.tsdb.retention.time=31d"
       - "--storage.tsdb.path=/data"
