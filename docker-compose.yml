@@ -8,41 +8,17 @@ x-logging: &logging
       max-size: "100m"
 
 services:
-  geth:
-    container_name: geth
-    image: ethereum/client-go:v1.9.14
-    restart: always
-    hostname: geth
-    command:
-      - "--goerli"
-      - "--rpc"
-      - "--rpcport=8545"
-      - "--rpcaddr=0.0.0.0"
-      - "--ws"
-      - "--wsaddr=0.0.0.0"
-      - "--wsport=8546"
-      - '--wsorigins="*"'
-      - '--rpcvhosts="*"'
-      - "--allow-insecure-unlock"
-      - '--rpcapi="db,eth,net,web3,personal"'
-    ports:
-      - 30303:30303/tcp
-      - 30303:30303/udp
-    volumes:
-      - ./geth:/root/.ethereum
-    <<: *logging
-
   beacon:
     container_name: beacon-chain
     image: gcr.io/prysmaticlabs/prysm/beacon-chain:${PRYSM_DOCKER_TAG}
     restart: always
     hostname: beacon-chain
-    depends_on:
-      - geth
-    command: --config-file=/config/beacon.yaml
+    command:
+      - "--config-file=/config/beacon.yaml"
+      - "--http-web3provider=${HTTP_WEB3PROVIDER}"
     ports:
       - "13000:13000"
-      - "12000:12000"
+      - "12000:12000/udp"
     dns:
       - 1.1.1.1
     volumes:
@@ -81,13 +57,16 @@ services:
     image: prom/prometheus
     restart: on-failure
     hostname: prometheus
+    user: root
     command:
       - "--storage.tsdb.retention.time=31d"
+      - "--storage.tsdb.path=/data"
       - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/data:/data
     <<: *logging
 
   grafana:

@@ -1,3 +1,4 @@
+![CI](https://github.com/neurotronix/prysm-docker-compose/workflows/CI/badge.svg)
 # prysm-docker-compose
 This docker-compose suite includes all parts to run and monitor a Prysm Ethereum 2.0 staking node. Please read this README in order to customize it to your needs.
 
@@ -11,7 +12,6 @@ This docker-compose suite includes all parts to run and monitor a Prysm Ethereum
 Credits to [prysm-grafana-dashboard](https://github.com/GuillaumeMiralles/prysm-grafana-dashboard) for providing the dashboards!
 
 ## Services
-* geth (beacon conntects to it to see deposits for validators)
 * beacon
 * validator
 * slasher
@@ -34,6 +34,7 @@ It's set to the latest stable version.
 
 Version | PRYSM_DOCKER_TAG
 --------|------------------
+alpha.11| HEAD-87ca73
 alpha.10| HEAD-1f20cb
 alpha.9 | HEAD-3fe47c
 witti   | https://github.com/stefa2k/prysm-docker-compose/tree/witti
