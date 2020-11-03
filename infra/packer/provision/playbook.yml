@@ -5,6 +5,10 @@
   become: true
 
   tasks:
+    - name: Get Vars
+      include_vars:
+        file: vars.yml
+
     - name: install git
       apt:
         name: git
@@ -34,7 +38,7 @@
     - name: get Docker gpg key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
-        id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+        id: "{{ docker.gpg_key_id }}"
         state: present
 
     - name: setup stable Docker repo
@@ -65,7 +69,7 @@
 
     - name: get docker-compose
       get_url:
-        url: "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
+        url: "https://github.com/docker/compose/releases/download/{{ docker_compose.version }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
         dest: /usr/local/bin/docker-compose
         mode: a+x
 
