@@ -45,6 +45,14 @@ resource "aws_security_group" "staker" {
       ]
     }
   }
+  egress {
+    from_port = 0
+    protocol = "-1"
+    to_port = 0
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    description = "Allow access to internet"
+  }
   tags = {
     Name = "${var.project_id}-sg"
   }
