@@ -22,3 +22,15 @@ jobs:
 
       - name: yaml-lint
         uses: ibiqlik/action-yamllint@v1
+
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v1
+      - name: 'Terraform Init'
+        run: terraform init
+        working-directory: ./infra/terraform
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./infra/terraform
+      - name: Terraform Format
+        run: terraform fmt -check
+        working-directory: ./infra/terraform
