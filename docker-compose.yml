@@ -7,6 +7,9 @@ x-logging: &logging
       max-file: "10"
       max-size: "100m"
 
+x-restart: &restart-unless-stopped
+  restart: unless-stopped
+
 services:
   beacon:
     container_name: beacon-chain
@@ -25,10 +28,10 @@ services:
       - ./config/beacon.yaml:/config/beacon.yaml:ro
       - ./beacon:/data
     <<: *logging
-
   validator:
     container_name: validator
     image: gcr.io/prysmaticlabs/prysm/validator:${PRYSM_DOCKER_TAG}
+    <<: *restart-unless-stopped
     restart: on-failure
     hostname: validator
     depends_on:
@@ -42,7 +45,7 @@ services:
   slasher:
     container_name: slasher
     image: gcr.io/prysmaticlabs/prysm/slasher:${PRYSM_DOCKER_TAG}
-    restart: always
+    <<: *restart-unless-stopped
     hostname: slasher
     depends_on:
       - beacon
@@ -55,7 +58,7 @@ services:
   prometheus:
     container_name: prometheus
     image: prom/prometheus
-    restart: on-failure
+    <<: *restart-unless-stopped
     hostname: prometheus
     user: root
     command:
@@ -72,7 +75,7 @@ services:
   grafana:
     container_name: grafana
     image: grafana/grafana:7.0.0
-    restart: on-failure
+    <<: *restart-unless-stopped
     hostname: grafana
     depends_on:
       - prometheus
