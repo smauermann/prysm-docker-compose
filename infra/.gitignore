@@ -13,7 +13,7 @@ crash.log
 
 ### Terraform ###
 # Local .terraform directories
-**/.terraform/*
+terraform/trash/.terraform/*
 
 # .tfstate files
 *.tfstate
@@ -26,7 +26,6 @@ crash.log
 # version control.
 #
 *.tfvars
-!example.tfvars
 
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
